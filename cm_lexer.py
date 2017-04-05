@@ -37,10 +37,19 @@ class Lexer(object):
             self._current_fp = 0
             self._token_buffer = []
             self._current_token = None
-            self._line_num = 0
-            self._col_num = 0
+            self._line_num = 1
+            self._col_num = 1
+            self._last_col = 1
             self._current_ch = '\0'
             self._lexer_status = LexStatus.LS_INIT
+
+    def show_error(self, msg_type, *msg):
+        cm_util.show_compile_error(self._line_num, self._col_num, msg_type, msg)
+
+    def skip(self, _token_type):
+        _token = self.get_next_token()
+        if _token.get_token_type() != _token_type:
+            self.show_error(cm_util.MsgType.ER_EXPECT_TOKEN, _token_type.name)
 
     # 返回一个token
     def put_back_token(self, _token):
@@ -53,9 +62,9 @@ class Lexer(object):
             self._token_buffer.remove(self._current_token)
             return self._current_token
         else:
-            return self.get_token_from_file()
+            return self._get_token_from_file()
 
-    def get_token_from_file(self):
+    def _get_token_from_file(self):
         self._lexer_status = LexStatus.LS_INIT
         _token = cm_token.Token()
         while self._lexer_status != LexStatus.LS_EOF and self._lexer_status != LexStatus.LS_RECEIVE:
@@ -73,7 +82,7 @@ class Lexer(object):
                 elif _ch == '\n':
                     self._new_line()
                 elif _ch == '\t' or _ch == '\r' or _ch == ' ':
-                    self._col_num += 1
+                    self._col_num += 0
                 elif _ch == '+':
                     _token.append_ch(_ch)
                     _token.set_token_type(cm_token.TokenType.TK_PLUS)
@@ -132,8 +141,7 @@ class Lexer(object):
                         _token.set_token_type(cm_token.TokenType.TK_NOT_EQUAL)
                         self._lexer_status = LexStatus.LS_RECEIVE
                     else:
-                        cm_util.show_compile_error(self._line_num, self._col_num, cm_util.MsgType.ER_EXPECT_TOKEN,
-                                                   '\'', '=', '\'')
+                        self.show_error(cm_util.MsgType.ER_EXPECT_TOKEN, '\'', '=', '\'')
                 elif _ch == ';':
                     _token.append_ch(_ch)
                     _token.set_token_type(cm_token.TokenType.TK_SEMICOLON)
@@ -167,8 +175,7 @@ class Lexer(object):
                     _token.set_token_type(cm_token.TokenType.TK_RIGHT_BRACE)
                     self._lexer_status = LexStatus.LS_RECEIVE
                 else:
-                    cm_util.show_compile_error(self._line_num, self._col_num, cm_util.MsgType.ER_UNEXPECTED_TOKEN,
-                                               '\'', _ch, '\'')
+                    self.show_error(cm_util.MsgType.ER_UNEXPECTED_TOKEN, '\'', _ch, '\'')
             elif self._lexer_status == LexStatus.LS_IN_INT:
                 _ch = self._get_ch()
                 if str.isdigit(_ch):
@@ -210,14 +217,12 @@ class Lexer(object):
                 if _ch == '*':
                     _as = Annotation.AN_3
                 elif _ch == -1:
-                    cm_util.show_compile_error(self._line_num, self._col_num, cm_util.MsgType.ER_EXPECT_TOKEN,
-                                               '\'', '*', '\'')
+                    self.show_error(cm_util.MsgType.ER_EXPECT_TOKEN, '\'', '*', '\'')
             elif _as == Annotation.AN_3:
                 if _ch == '/':
                     break
                 elif _ch == -1:
-                    cm_util.show_compile_error(self._line_num, self._col_num, cm_util.MsgType.ER_EXPECT_TOKEN,
-                                               '\'', '/', '\'')
+                    self.show_error(cm_util.MsgType.ER_EXPECT_TOKEN, '\'', '/', '\'')
 
     # 从缓冲区中获取一个字符
     def _get_ch(self):
@@ -227,6 +232,7 @@ class Lexer(object):
         _ch = self._file_buffer[self._current_fp]
         self._current_fp += 1
         self._current_ch = _ch
+        self._last_col = self._col_num
         self._col_num += 1
         return _ch
 
@@ -235,8 +241,14 @@ class Lexer(object):
         if self._current_fp > 0:
             self._current_fp -= 1
 
+        self._col_num -= 1
+        if self._col_num < 1:
+            self._col_num = self._last_col
+            self._line_num -= 1
+
     # 开始新的一行
     def _new_line(self):
+        self._last_col = self._col_num
         self._col_num = 1
         self._line_num += 1
 

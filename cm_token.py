@@ -59,8 +59,8 @@ _keyword_table = {
     'return': TokenType.KW_RETURN,
     'void': TokenType.KW_VOID,
     'while': TokenType.KW_WHILE,
-    'input': TokenType.KW_INNER_FUNC_INPUT,
-    'output': TokenType.KW_INNER_FUNC_OUTPUT
+    # 'input': TokenType.KW_INNER_FUNC_INPUT,
+    # 'output': TokenType.KW_INNER_FUNC_OUTPUT
 }
 
 
@@ -101,4 +101,3 @@ class Token(object):
     def parse_int(self):
         self._token_type = TokenType.TK_INTEGER
         self._value = int(self._source_str)
-

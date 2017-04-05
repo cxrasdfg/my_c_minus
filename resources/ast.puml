@@ -1,10 +1,135 @@
-@startuml
-(*)  --> "check input"
-If "input is verbose" then
---> [Yes] "turn on verbosity"
---> "run command"
-else
---> "run command"
-Endif
--->(*)
-@enduml
+@startdot
+digraph G {
+_node1[label="inner declaration output , return:void"]
+_node1parameters[label="parameters"]
+_node2[label="local_dec N/A:local_dec"]
+_node3[label="inner declaration input , return:int"]
+_node3parameters[label="parameters"]
+_node4[label="func_dec gcd , return:int"]
+_node5[label="compound"]
+_node5local_declaration[label="local_declaration"]
+_node5sub_statements[label="sub statements"]
+_node6[label="if"]
+_node7[label="=="]
+_node8[label="symbol_exp"]
+_node9[label="local_dec v:local_dec"]
+_node10[label="0:const_int"]
+_node11[label="return_exp"]
+_node12[label="symbol_exp"]
+_node13[label="local_dec u:local_dec"]
+_node6_else[label="else"]
+_node14[label="return_exp"]
+_node15[label="func_call"]
+_node16[label="symbol_exp"]
+_node15_arguments[label="arguments"]
+_node17[label=","]
+_node18[label="symbol_exp"]
+_node19[label="-"]
+_node20[label="*"]
+_node21[label="/"]
+_node22[label="symbol_exp"]
+_node23[label="symbol_exp"]
+_node24[label="symbol_exp"]
+_node25[label="symbol_exp"]
+_node4_parameters[label="parameters"]
+_node13[label="local_dec u:local_dec"]
+_node9[label="local_dec v:local_dec"]
+_node28[label="func_dec main , return:void"]
+_node29[label="compound"]
+_node29local_declaration[label="local_declaration"]
+_node29sub_statements[label="sub statements"]
+_node30[label="local_dec y:local_dec"]
+_node31[label="local_dec x:local_dec"]
+_node32[label="assign_exp"]
+_node33[label="symbol_exp"]
+_node34[label="func_call"]
+_node35[label="symbol_exp"]
+_node34_arguments[label="arguments"]
+_node36[label="assign_exp"]
+_node37[label="symbol_exp"]
+_node38[label="func_call"]
+_node39[label="symbol_exp"]
+_node38_arguments[label="arguments"]
+_node40[label="func_call"]
+_node41[label="symbol_exp"]
+_node40_arguments[label="arguments"]
+_node42[label="func_call"]
+_node43[label="symbol_exp"]
+_node42_arguments[label="arguments"]
+_node44[label=","]
+_node45[label="symbol_exp"]
+_node46[label="symbol_exp"]
+_node28_parameters[label="parameters"]
+_node1->_node1parameters
+_node1parameters->_node2
+_node3->_node3parameters
+_node5->_node5local_declaration
+_node5->_node5sub_statements
+_node8->_node9
+_node7->_node8
+_node7->_node10
+_node12->_node13
+_node11->_node12
+_node6->_node6_else
+_node16->_node4
+_node15->_node16
+_node15->_node15_arguments
+_node18->_node9
+_node22->_node13
+_node23->_node9
+_node21->_node22
+_node21->_node23
+_node24->_node9
+_node20->_node21
+_node20->_node24
+_node25->_node13
+_node19->_node20
+_node19->_node25
+_node17->_node18
+_node17->_node19
+_node15_arguments->_node17
+_node14->_node15
+_node6->_node7
+_node6->_node11
+_node6_else->_node14
+_node5sub_statements->_node6
+_node4->_node5
+_node4->_node4_parameters
+_node4_parameters->_node13
+_node4_parameters->_node9
+_node29->_node29local_declaration
+_node29->_node29sub_statements
+_node29local_declaration->_node30
+_node29local_declaration->_node31
+_node33->_node31
+_node35->_node3
+_node34->_node35
+_node34->_node34_arguments
+_node32->_node33
+_node32->_node34
+_node29sub_statements->_node32
+_node37->_node30
+_node39->_node3
+_node38->_node39
+_node38->_node38_arguments
+_node36->_node37
+_node36->_node38
+_node29sub_statements->_node36
+_node41->_node1
+_node40->_node41
+_node40->_node40_arguments
+_node43->_node4
+_node42->_node43
+_node42->_node42_arguments
+_node45->_node31
+_node46->_node30
+_node44->_node45
+_node44->_node46
+_node42_arguments->_node44
+_node40_arguments->_node42
+_node29sub_statements->_node40
+_node28->_node29
+_node28->_node28_parameters
+
+}
+@enddot
