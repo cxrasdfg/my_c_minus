@@ -1,0 +1,154 @@
+@startdot
+digraph G {
+  test_table[shape=none,margin=0,label=<<table BORDER='0'
+  CELLBORDER='1' CELLSPACING='0' CELLPADDING='4'>
+  <tr>
+      <td></td>
+      <td colspan='10'>int</td>
+      <td colspan='10'>int[]</td>
+      <td colspan='10'>void</td>
+  </tr>
+  <tr>
+      <td></td>
+      <td>==</td>
+      <td>!=</td>
+      <td>《</td>
+      <td>《=</td>
+      <td>》</td>
+      <td>》=</td>
+      <td>+</td>
+      <td>-</td>
+      <td>×</td>
+      <td>/</td>
+
+      <td>==</td>
+      <td>!=</td>
+      <td>《</td>
+      <td>《=</td>
+      <td>》</td>
+      <td>》=</td>
+      <td>+</td>
+      <td>-</td>
+      <td>×</td>
+      <td>/</td>
+
+      <td>==</td>
+      <td>!=</td>
+      <td>《</td>
+      <td>《=</td>
+      <td>》</td>
+      <td>》=</td>
+      <td>+</td>
+      <td>-</td>
+      <td>×</td>
+      <td>/</td>
+  </tr>
+  <tr>
+      <td>int</td>
+      <td>int</td>
+      <td>int</td>
+      <td>int</td>
+      <td>int</td>
+      <td>int</td>
+      <td>int</td>
+      <td>int</td>
+      <td>int</td>
+      <td>int</td>
+      <td>int</td>
+
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>int[]</td>
+      <td>int[]</td>
+      <td>E</td>
+      <td>E</td>
+
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+
+  </tr>
+  <tr>
+      <td>int[]</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>int[]</td>
+      <td>int[]</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+  </tr>
+  <tr>
+      <td>void</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+      <td>E</td>
+  </tr>
+</table>>]
+}
+@enddot

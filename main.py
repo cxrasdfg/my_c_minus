@@ -19,3 +19,10 @@ _parser.write_graph()
 # for elem in _test:
 #     print(elem)
 #
+
+
+_test = {'1': {'1': 1},
+         '2': {'2': 2},
+         '3': {'3': 3},
+         '4': {'4': 4},
+         }

@@ -109,6 +109,7 @@ class Lexer(object):
                     if _temp_ch == '=':
                         _token.append_ch('<=')
                         _token.set_token_type(cm_token.TokenType.TK_NOT_LARGER)
+                        self._lexer_status = LexStatus.LS_RECEIVE
                     else:
                         self._put_back_ch()
                         _token.append_ch(_ch)

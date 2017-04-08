@@ -7,14 +7,25 @@ from cm_token import TokenType
 
 class MsgType(Enum):
     ER_NEED_IDENTIFIER = 'need identifier:'
-    ER_NEED_TYPE_SPECIFIER = 'need type specifier'
-    ER_NEED_CONST_INT = 'need const integer'
+    ER_NEED_TYPE_SPECIFIER = 'need type specifier:'
+    ER_NEED_CONST_INT = 'need const integer:'
+    ER_NEED_FUNCTION_NAME = 'need function name:'
+    ER_NEED_EXPRESSION = 'need expression:'
+    ER_NEED_ARRAY_SIZE = 'need array size:'
+    ER_NEED_ARRAY_NAME = 'need array name:'
+    ER_ASSIGN_TYPE_ERROR = 'can not assign exp:'
     ER_UNDEFINED_IDENTIFIER = 'undefined identifier:'
     ER_UNEXPECTED_TOKEN = 'unexpected token:'
+    ER_EXPRESSION_NOT_ASSIGNABLE = 'expression in the left is not assignable:'
     ER_EXPECT_TOKEN = 'expect token:'
     ER_DUPLICATED_NAME = 'name already exists in the same scope:'
     ER_VOID_VARIABLE = 'void can not define the variable:'
-    ER_VOID_ONLY_PARAMETER = '\'void\' must be the only parameter'
+    ER_VOID_ONLY_PARAMETER = '\'void\' must be the only parameter:'
+    ER_VOID_ARGUMENTS = '\'void\' can not be the argument of function call:'
+    ER_FUNCTION_CALL_TOO_MUCH_ARGUMENTS = 'too much arguments in function calling:'
+    ER_FUNCTION_CALL_TOO_FEW_ARGUMENTS = 'too few arguments in function calling:'
+    ER_FUNCTION_CALL_PARAMETER_FIT_ERROR = 'no fitted arguments in function calling:'
+    ER_RETURN_TYPE = 'return error type:'
 
 
 def show_compile_warn(_line_num, _col_num, _msg_type, _msg):
