@@ -27,6 +27,10 @@ class Parser(object):
             self._symbol_table[_key].draw(_gg)
         _gg.write()
 
+    # 获取symbol_table
+    def get_symbol_table(self):
+        return self._symbol_table
+
     # 主要用于插入系统函数 such as input and output 或者其他的内置的函数，，，
     def _table_init(self):
         _output = cm_ast.ASTNode()
@@ -78,14 +82,14 @@ class Parser(object):
         _symbol_name = _symbol_token.get_source_str()
 
         if self._collision_test(_symbol_name):
-            self.show_error(MsgType.ER_DUPLICATED_NAME, _symbol_name)
+            self.show_error(MsgType.COMPILE_ER_DUPLICATED_NAME, _symbol_name)
 
         _scope_len = len(self._scope_indices)
         _token = self._get_token()
         _token_type = _token.get_token_type()
         if _token_type == TokenType.TK_LEFT_PARENT:  # '(' it's the function 对函数的嵌套定义先不管。。 c99是支持函数潜逃定义的
             if _scope_len != 0:
-                self.show_error(MsgType.ER_UNEXPECTED_TOKEN, _token.get_source_str())
+                self.show_error(MsgType.COMPILE_ER_UNEXPECTED_TOKEN, _token.get_source_str())
             _params = self._param_list()
             self._current_func_params = _params
             self._skip(TokenType.TK_LEFT_BRACE)
@@ -105,7 +109,7 @@ class Parser(object):
             _result.func_body = _func_body
         elif _token_type == TokenType.TK_SEMICOLON:  # ';'  # 说明是变量定义
             if _type_name == TokenType.KW_VOID:
-                self.show_error(MsgType.ER_VOID_VARIABLE, _symbol_name)
+                self.show_error(MsgType.COMPILE_ER_VOID_VARIABLE, _symbol_name)
             _result = cm_ast.ASTNode()
             if _scope_len > 0:  # 表明是局部变量
                 _result.type = cm_ast.ASTType.AST_LOCAL_DECLARATION
@@ -117,7 +121,7 @@ class Parser(object):
             self._putback_token()  # 这里put back是为了适应函数 _array() ... , 因为它消耗了 '['
             _array_size = self._array()
             if _array_size is None or _array_size == -1:
-                self.show_error(MsgType.ER_NEED_ARRAY_SIZE)
+                self.show_error(MsgType.COMPILE_ER_NEED_ARRAY_SIZE)
             self._skip(TokenType.TK_RIGHT_BRACKET)
             self._skip(TokenType.TK_SEMICOLON)
             _result = cm_ast.ASTNode()
@@ -129,13 +133,13 @@ class Parser(object):
             _result.var_type = cm_ast.VarType.VT_ARRAY
             _result.var_array_size = _array_size
         else:
-            self.show_error(MsgType.ER_UNEXPECTED_TOKEN, _token.get_source_str())
+            self.show_error(MsgType.COMPILE_ER_UNEXPECTED_TOKEN, _token.get_source_str())
         return _result
 
     def _symbol_token(self):
         _token = self._get_token()
         if _token.get_token_type() != TokenType.TK_IDENTIFIER:
-            self.show_error(MsgType.ER_NEED_IDENTIFIER)
+            self.show_error(MsgType.COMPILE_ER_NEED_IDENTIFIER)
         return _token
 
     # type name
@@ -147,7 +151,7 @@ class Parser(object):
         elif _type == TokenType.KW_VOID:  # 'void'
             return TokenType.KW_VOID
         else:
-            self.show_error(MsgType.ER_NEED_TYPE_SPECIFIER)
+            self.show_error(MsgType.COMPILE_ER_NEED_TYPE_SPECIFIER)
 
     # <param_list> -> <type_name> <symbol> {',' <type_name> <symbol>}
     def _param_list(self):
@@ -161,23 +165,25 @@ class Parser(object):
                 break
             elif _type == TokenType.KW_VOID:  # 'void'
                 if _void_flag:
-                    self.show_error(MsgType.ER_VOID_ONLY_PARAMETER)
+                    self.show_error(MsgType.COMPILE_ER_VOID_ONLY_PARAMETER)
                 else:
                     _void_flag = True
                 if len(_result) != 0:  # 表明已经至少有一个参数了
-                    self.show_error(MsgType.ER_VOID_ONLY_PARAMETER)
+                    self.show_error(MsgType.COMPILE_ER_VOID_ONLY_PARAMETER)
             elif _type == TokenType.KW_INT:  # 'int' 肯定是int 因为除了整形变量，就是整形数组。。。
                 if _void_flag:
-                    self.show_error(MsgType.ER_VOID_ONLY_PARAMETER)
+                    self.show_error(MsgType.COMPILE_ER_VOID_ONLY_PARAMETER)
                 _single_param = self._func_param_var()
+                if self._param_name_collision_test(_result, _single_param.name):
+                    self.show_error(MsgType.COMPILE_ER_DUPLICATED_NAME, _single_param.name)
                 _result.append(_single_param)
             elif _type == TokenType.TK_COMMA:  # ','
                 if _void_flag:
-                    self.show_error(MsgType.ER_VOID_ONLY_PARAMETER)
+                    self.show_error(MsgType.COMPILE_ER_VOID_ONLY_PARAMETER)
                 continue
             else:
                 self._putback_token()
-                self.show_error(MsgType.ER_UNEXPECTED_TOKEN, _token.get_source_str())
+                self.show_error(MsgType.COMPILE_ER_UNEXPECTED_TOKEN, _token.get_source_str())
                 break
         return _result
 
@@ -201,7 +207,7 @@ class Parser(object):
             _result = _param
 
         else:  # 没有寻找到identifier
-            self.show_error(MsgType.ER_NEED_IDENTIFIER)
+            self.show_error(MsgType.COMPILE_ER_NEED_IDENTIFIER)
         return _result
 
     def _array(self):
@@ -261,7 +267,7 @@ class Parser(object):
         if (self._current_func_return == cm_ast.VarType.VT_VOID and _result.return_exp is not None)\
                 or (_result.return_exp is not None and self._current_func_return != _result.return_exp.exp_semantic_type
                     ):
-            self.show_error(MsgType.ER_RETURN_TYPE, _result.return_exp.exp_semantic_type.value, ' to ', self.
+            self.show_error(MsgType.COMPILE_ER_RETURN_TYPE, _result.return_exp.exp_semantic_type.value, ' to ', self.
                             _current_func_return.value, ':')
         ##################################
 
@@ -280,8 +286,8 @@ class Parser(object):
         _judge_exp = self._expression()
 
         # 语义分析:#####################################
-        if _judge_exp is None:
-            self.show_error(MsgType.ER_NEED_EXPRESSION)
+        if _judge_exp is None or _judge_exp.exp_semantic_type != cm_ast.VarType.VT_INT:
+            self.show_error(MsgType.COMPILE_ER_NEED_EXPRESSION)
         ###############################################
 
         self._skip(TokenType.TK_RIGHT_PARENT)
@@ -289,7 +295,7 @@ class Parser(object):
 
         # 语义分析：####################################
         if _if_body is None:
-            self.show_error(MsgType.ER_NEED_EXPRESSION)
+            self.show_error(MsgType.COMPILE_ER_NEED_EXPRESSION)
         ##############################################
 
         _else = None
@@ -298,7 +304,7 @@ class Parser(object):
 
             #  语义分析：###############################
             if _else is None:
-                self.show_error(MsgType.ER_NEED_EXPRESSION)
+                self.show_error(MsgType.COMPILE_ER_NEED_EXPRESSION)
             ##########################################
         else:
             self._putback_token()
@@ -315,8 +321,8 @@ class Parser(object):
         _judge_exp = self._expression()
 
         # 语义分析##############################
-        if _judge_exp is None:
-            self.show_error(MsgType.ER_NEED_EXPRESSION)
+        if _judge_exp is None or _judge_exp.exp_semantic_type != cm_ast.VarType.VT_INT:
+            self.show_error(MsgType.COMPILE_ER_NEED_EXPRESSION)
         #######################################
 
         self._skip(TokenType.TK_RIGHT_PARENT)
@@ -324,7 +330,7 @@ class Parser(object):
 
         #  语义分析##############################
         if _while_body is None:
-            self.show_error(MsgType.ER_NEED_EXPRESSION)
+            self.show_error(MsgType.COMPILE_ER_NEED_EXPRESSION)
         ########################################
 
         _result = cm_ast.ASTNode()
@@ -495,15 +501,15 @@ class Parser(object):
                 _temp = _result
                 _result = cm_ast.ASTNode()
                 _result.type = cm_ast.ASTType.AST_ADD_EXP
-                _result.r_child = _temp
-                _result.l_child = _next_node
+                _result.l_child = _temp
+                _result.r_child = _next_node
             elif _type == TokenType.TK_MINUS:
                 _next_node = self._mul_exp()
                 _temp = _result
                 _result = cm_ast.ASTNode()
                 _result.type = cm_ast.ASTType.AST_MINUS_EXP
-                _result.r_child = _temp
-                _result.l_child = _next_node
+                _result.l_child = _temp
+                _result.r_child = _next_node
             else:
                 self._putback_token()
                 break
@@ -558,13 +564,13 @@ class Parser(object):
             # 语义检查，既然是中括号，左边的一定要是数组（整型的）,
             ##############################################
             if _primary_exp is None or _primary_exp.exp_semantic_type != cm_ast.VarType.VT_ARRAY:
-                self.show_error(MsgType.ER_NEED_ARRAY_NAME)
+                self.show_error(MsgType.COMPILE_ER_NEED_ARRAY_NAME)
             ###############################################
             _int_exp = self._expression()
 
             # 语义分析 #####################################
             if _int_exp is None or _int_exp.exp_semantic_type != cm_ast.VarType.VT_INT:
-                self.show_error(MsgType.ER_NEED_EXPRESSION, 'array index must be int ')
+                self.show_error(MsgType.COMPILE_ER_NEED_EXPRESSION, 'array index must be int ')
             ###############################################
 
             self._skip(TokenType.TK_RIGHT_BRACKET)
@@ -582,7 +588,7 @@ class Parser(object):
             ######################################################
             if _primary_exp is None or (_primary_exp.var.type != cm_ast.ASTType.AST_FUNC_DECLARATION and
                _primary_exp.var.type != cm_ast.ASTType.AST_INNER_DECLARATION):
-                self.show_error(MsgType.ER_NEED_FUNCTION_NAME)
+                self.show_error(MsgType.COMPILE_ER_NEED_FUNCTION_NAME)
             ######################################################
             _args = self._arguments(_primary_exp.var.func_parameters)
             self._skip(TokenType.TK_RIGHT_PARENT)
@@ -613,9 +619,13 @@ class Parser(object):
 
         if self._get_token().get_token_type() == TokenType.TK_RIGHT_PARENT:
             self._putback_token()
+
+            #  语义分析######################
+            self._check_argument(_func_params, _args)
+            ################################
             return _args
         elif self._current_token.get_token_type() == TokenType.KW_VOID:
-            self.show_error(MsgType.ER_VOID_ARGUMENTS)
+            self.show_error(MsgType.COMPILE_ER_VOID_ARGUMENTS)
         else:
             self._putback_token()
         while 1:
@@ -629,6 +639,8 @@ class Parser(object):
             elif _token.get_token_type() == TokenType.TK_RIGHT_PARENT:
                 self._putback_token()
                 break
+            elif _token.get_token_type() == TokenType.KW_VOID:
+                self.show_error(MsgType.COMPILE_ER_VOID_ARGUMENTS)
 
         # 语义分析：#####################################
         self._check_argument(_func_params, _args)
@@ -653,7 +665,7 @@ class Parser(object):
                 #####################################
                 return _s_exp
             else:  # 没找到
-                self.show_error(MsgType.ER_UNDEFINED_IDENTIFIER, _token_str, ' ')
+                self.show_error(MsgType.COMPILE_ER_UNDEFINED_IDENTIFIER, _token_str, ' ')
         elif _type == TokenType.TK_INTEGER:  # 如果是个整数常量
             _int_exp = cm_ast.ASTNode()
             _int_exp.type = cm_ast.ASTType.AST_CONST_INT
@@ -679,6 +691,14 @@ class Parser(object):
         if len(self._scope_indices) == 0:  # in global scope
             self._current_func_params = []
             self._current_func_return = None
+
+    # 检测函数形参的命名冲突检测。。。
+    @staticmethod
+    def _param_name_collision_test(_param_list: list, _name):
+        for _param in _param_list:
+            if _param.name == _name:
+                return True
+        return False
 
     # 命名冲突检测 冲突返回true 不冲突返回false
     def _collision_test(self, _name):
@@ -757,12 +777,13 @@ class Parser(object):
     def _check_argument(self, _func_params, _args_list: list):
         _arguments = self._expression_to_list(_args_list)
         if len(_arguments) > len(_func_params):
-            self.show_error(MsgType.ER_FUNCTION_CALL_TOO_MUCH_ARGUMENTS)
+            self.show_error(MsgType.COMPILE_ER_FUNCTION_CALL_TOO_MUCH_ARGUMENTS)
         elif len(_arguments) < len(_func_params):
-            self.show_error(MsgType.ER_FUNCTION_CALL_TOO_FEW_ARGUMENTS)
+            self.show_error(MsgType.COMPILE_ER_FUNCTION_CALL_TOO_FEW_ARGUMENTS)
         for _index in range(0, len(_arguments)):
             if _arguments[_index].exp_semantic_type != _func_params[_index].var_type:
-                self.show_error(MsgType.ER_FUNCTION_CALL_PARAMETER_FIT_ERROR, _arguments[_index].exp_semantic_type.
+                self.show_error(MsgType.COMPILE_ER_FUNCTION_CALL_PARAMETER_FIT_ERROR, _arguments[_index].
+                                exp_semantic_type.
                                 value, ' to ', _func_params[_index].var_type.value, ':')
 
     # 获取expression中的逗号表达式为一个链表
@@ -788,12 +809,12 @@ class Parser(object):
         _r_child = _in.r_child
 
         if _l_child is None or _r_child is None:
-            self.show_error(MsgType.ER_NEED_EXPRESSION)
+            self.show_error(MsgType.COMPILE_ER_NEED_EXPRESSION)
         _in.exp_semantic_type = cm_ast.exp_operator_table[_l_child.exp_semantic_type][_r_child.exp_semantic_type].\
             get(_in.type)
         assert _in.exp_semantic_type is not None  # 非空断言
         if _in.exp_semantic_type == cm_ast.VarType.VT_DEFAULT:
-            self.show_error(MsgType.ER_NEED_EXPRESSION, 'in operator:\'', _in.type.value, '\'')
+            self.show_error(MsgType.COMPILE_ER_NEED_EXPRESSION, 'in operator:\'', _in.type.value, '\'')
 
     # 对于赋值表达式的语义分析
     def _assign_exp_semantics_check(self, _in: cm_ast.ASTNode):
@@ -803,13 +824,18 @@ class Parser(object):
         _r_child = _in.r_child
 
         if _l_child is None or _r_child is None:
-            self.show_error(MsgType.ER_NEED_EXPRESSION)
+            self.show_error(MsgType.COMPILE_ER_NEED_EXPRESSION)
         if _l_child.exp_semantic_type != _r_child.exp_semantic_type:
-            self.show_error(MsgType.ER_ASSIGN_TYPE_ERROR, _r_child.exp_semantic_type.value, ' to ',
+            self.show_error(MsgType.COMPILE_ER_ASSIGN_TYPE_ERROR, _r_child.exp_semantic_type.value, ' to ',
                             _l_child.exp_semantic_type.value)
         if _l_child.type != cm_ast.ASTType.AST_ARRAY_INDEX and\
                 (_l_child.type == cm_ast.ASTType.AST_SYMBOL_EXP and _l_child.var.var_type != cm_ast.VarType.VT_INT):
-            self.show_error(MsgType.ER_EXPRESSION_NOT_ASSIGNABLE)
+            self.show_error(MsgType.COMPILE_ER_EXPRESSION_NOT_ASSIGNABLE,
+                            _r_child.exp_semantic_type.value, ' to ',
+                            _l_child.exp_semantic_type.value)
+        if _l_child.type == cm_ast.ASTType.AST_CONST_INT:
+            self.show_error(MsgType.COMPILE_ER_EXPRESSION_NOT_ASSIGNABLE, _l_child.exp_semantic_type.value,
+                            ' to const int ')
         _in.exp_semantic_type = _l_child.exp_semantic_type
 
     # 对symbol_exp 进行语义类型的分配

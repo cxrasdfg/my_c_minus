@@ -1,57 +1,37 @@
-int gcd (int u, int v)
-{
 
-if (v == 0)
- return u ;
-else
- return gcd(v,u-u/v*v);
-/* u-u/v*v == u mod v */
-}
-
-int foo(int x, int y,int z){
-
-}
-
-int fooa(void){
-}
-
-int fo(){
-}
-void foob(void){
-}
-void main(void)
-{
-int x;
-int y;
-
-{
-    x!=x;
-    x==y;
-    x>y;
-    x>=y*2;
-    x<y;
-    x+y;
-    x-y;
-    x*y;
-    x/y;
-    x<=y;
-
-
-    {
-      int x[2];
-      int y;
-      fooa();
-
-      while(1 != 2){
-      if (y==1)
-         output(y);
-      else
-         output(y);
+void sort(int x[],int n){
+   int i;
+   int j;
+   i=0;
+   while(i<n){
+    j=i;
+    while(j<n-1){
+      if (x[i]>x[j+1]){
+        int temp;
+        temp =x[i];
+        x[i]=x[j+1];
+        x[j+1]=temp;
       }
+      j=j+1;
     }
+    i=i+1;
+   }
 }
 
-x = input();
-y = input();
-  output(gcd(x,y));
+void print(int x[], int n){
+  int i;
+  while(i<n){
+    output(x[i]);
+    i=i+1;
+  }
+}
+
+void main(){
+  int x[10];
+  x[0]=8;
+  x[1]=2;
+  x[2]=1;
+  x[3]=7;
+  sort(x,4);
+  print(x,4);
 }

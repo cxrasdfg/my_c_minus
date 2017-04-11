@@ -49,7 +49,7 @@ class ASTNode(object):
     def __init__(self):
         self.name = ''  # 名字 一般全局声明或局部声明才会有名字
         self.type = ASTType.AST_DEFAULT  # 表明节点的类型
-        self.int_value = 0  # 表示的值 如常整数
+        self.int_value = 0  # 表常数整数
         self.l_child = None  # 指代表达式节点的右子节点
         self.r_child = None  # 指代表达式节点的左子节点
         self.sub_statement = []  # 指代复合语句中的子语句
@@ -65,14 +65,14 @@ class ASTNode(object):
         self.while_body = None  # while 语句的主体
 
         self.var_type = VarType.VT_DEFAULT  # 变量的类型
-        self.var_int_value = ''  # 整数变量的值
+        self.var_int_value = 0  # 整数变量的值
         self.var_array_size = 0  # 数组大小
         self.var_array_offset = 0  # 相对数组的偏移量 如 int x[10] 讲x+2 传入到函数参数中
         self.var_array_pointer = []  # 作为一个数组..
 
         self.return_exp = None  # 主要指向返回表达式的对应的返回表达式， 空的话就表示没有返回的值
         self.break_while = None  # 主要用于指向break语句break的while... 需要 ？ 不需要？ 好像没有break啊。。。 算了 就这样吧``
-        self._draw_node_name = ''  # 用于绘制到dot语言的图形时指定的名字。。
+        self.draw_node_name = ''  # 用于绘制到dot语言的图形时指定的名字。。
 
         # 经过运算后的语义,主要是针对各种运算符，表达式的。如1+2是int,对于整数变量a,b, a+1是int, a+b仍然是int
         # 对于整数的关系运算符来说，a!=b,a!=1,a<=b...返回值都为整数，用整数0表示false，整数1表示true
@@ -82,19 +82,24 @@ class ASTNode(object):
         # 函数的话，不能返回数组,或者没有返回值，，只能返回int，返回其他的或者在没有返回值的时候返回任何东西都应该报错。。
         self.exp_semantic_type = VarType.VT_DEFAULT
 
+        # 运行时产生的值。。。
+        self.exp_run_time_value = 0  # 运行时的赋予的值
+
     def draw(self, _gg):
         ASTNode.node_count += 1
         _node_name = '_node' + str(ASTNode.node_count)
-        if self._draw_node_name == '':
-            self._draw_node_name = _node_name
+        if self.draw_node_name == '':
+            self.draw_node_name = _node_name
         else:
-            _node_name = self._draw_node_name  # 防止对于同一个变量， 不同的调用形成多个节点
+            _node_name = self.draw_node_name  # 防止对于同一个变量， 不同的调用形成多个节点
         if self.type == ASTType.AST_LOCAL_DECLARATION:
-            _gg.add_node(_node_name, ASTType.AST_LOCAL_DECLARATION.value + ' ' + self.name + ':' + self.type.value)
+            _gg.add_node(_node_name, ASTType.AST_LOCAL_DECLARATION.value + ' ' + self.name + ':' + str(self.type.value))
         elif self.type == ASTType.AST_GLOBAL_DECLARATION:
-            _gg.add_node(_node_name, ASTType.AST_GLOBAL_DECLARATION.value + ' ' + self.name + ':' + self.type.value)
+            _gg.add_node(_node_name, ASTType.AST_GLOBAL_DECLARATION.value + ' ' + self.name + ':' + str(self.type.value)
+                         )
         elif self.type == ASTType.AST_FUNC_DECLARATION:
-            _gg.add_node(_node_name, ASTType.AST_FUNC_DECLARATION.value + ' ' + self.name + ' , return:' + self.func_return_type.value)
+            _gg.add_node(_node_name, ASTType.AST_FUNC_DECLARATION.value + ' ' + self.name + ' , return:' + str(
+                self.func_return_type.value))
             _func_body = self.func_body.draw(_gg)  # 对函数体进行写入
             _gg.add_relation(_node_name, _func_body)
             _param_container_name = _node_name + '_parameters'
@@ -106,7 +111,7 @@ class ASTNode(object):
         elif self.type == ASTType.AST_INNER_DECLARATION:
             _gg.add_node(_node_name,
                          ASTType.AST_INNER_DECLARATION.value + ' ' + self.name + ' , return:'
-                         + self.func_return_type.value)
+                         + str(self.func_return_type.value))
             # _func_body = self.func_body.draw(_gg)  # 对函数体进行汇至
             # _gg.add_relation(_node_name, _func_body)
             _param_container_name = _node_name + 'parameters'
@@ -190,16 +195,16 @@ class ASTNode(object):
             for _param in self.r_child:
                 _r_name = _param.draw(_gg)
                 _gg.add_relation(_arguments_container_name, _r_name)
-        elif self.type == ASTType.AST_PRIMARY_EXP:
-            self
+        # elif self.type == ASTType.AST_PRIMARY_EXP:
+        #     self
         elif self.type == ASTType.AST_CONST_INT:
             _gg.add_node(_node_name, str(self.int_value) + ':const_int')
         elif self.type == ASTType.AST_SYMBOL_EXP:
             _gg.add_node(_node_name, self.type.value)
-            if self.var._draw_node_name == '':
+            if self.var.draw_node_name == '':
                 _ref = self.var.draw(_gg)
             else:
-                _ref = self.var._draw_node_name
+                _ref = self.var.draw_node_name
             _gg.add_relation(_node_name, _ref)
         elif self.type == ASTType.AST_RETURN_EXP:
             _gg.add_node(_node_name, self.type.value)
@@ -237,7 +242,7 @@ exp_operator_table = {
             ASTType.AST_LARGER_EXP: VarType.VT_DEFAULT,
             ASTType.AST_NOT_LESS_EXP: VarType.VT_DEFAULT,
             ASTType.AST_ADD_EXP: VarType.VT_ARRAY,
-            ASTType.AST_MINUS_EXP: VarType.VT_ARRAY,
+            ASTType.AST_MINUS_EXP: VarType.VT_DEFAULT,
             ASTType.AST_MUL_EXP: VarType.VT_DEFAULT,
             ASTType.AST_DIV_EXP: VarType.VT_DEFAULT,
         },

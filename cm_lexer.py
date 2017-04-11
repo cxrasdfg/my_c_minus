@@ -49,7 +49,7 @@ class Lexer(object):
     def skip(self, _token_type):
         _token = self.get_next_token()
         if _token.get_token_type() != _token_type:
-            self.show_error(cm_util.MsgType.ER_EXPECT_TOKEN, _token_type.name)
+            self.show_error(cm_util.MsgType.COMPILE_ER_EXPECT_TOKEN, _token_type.name)
 
     # 返回一个token
     def put_back_token(self, _token):
@@ -142,7 +142,7 @@ class Lexer(object):
                         _token.set_token_type(cm_token.TokenType.TK_NOT_EQUAL)
                         self._lexer_status = LexStatus.LS_RECEIVE
                     else:
-                        self.show_error(cm_util.MsgType.ER_EXPECT_TOKEN, '\'', '=', '\'')
+                        self.show_error(cm_util.MsgType.COMPILE_ER_EXPECT_TOKEN, '\'', '=', '\'')
                 elif _ch == ';':
                     _token.append_ch(_ch)
                     _token.set_token_type(cm_token.TokenType.TK_SEMICOLON)
@@ -176,7 +176,7 @@ class Lexer(object):
                     _token.set_token_type(cm_token.TokenType.TK_RIGHT_BRACE)
                     self._lexer_status = LexStatus.LS_RECEIVE
                 else:
-                    self.show_error(cm_util.MsgType.ER_UNEXPECTED_TOKEN, '\'', _ch, '\'')
+                    self.show_error(cm_util.MsgType.COMPILE_ER_EXPECT_TOKEN, '\'', _ch, '\'')
             elif self._lexer_status == LexStatus.LS_IN_INT:
                 _ch = self._get_ch()
                 if str.isdigit(_ch):
@@ -218,12 +218,12 @@ class Lexer(object):
                 if _ch == '*':
                     _as = Annotation.AN_3
                 elif _ch == -1:
-                    self.show_error(cm_util.MsgType.ER_EXPECT_TOKEN, '\'', '*', '\'')
+                    self.show_error(cm_util.MsgType.COMPILE_ER_EXPECT_TOKEN, '\'', '*', '\'')
             elif _as == Annotation.AN_3:
                 if _ch == '/':
                     break
                 elif _ch == -1:
-                    self.show_error(cm_util.MsgType.ER_EXPECT_TOKEN, '\'', '/', '\'')
+                    self.show_error(cm_util.MsgType.COMPILE_ER_EXPECT_TOKEN, '\'', '/', '\'')
 
     # 从缓冲区中获取一个字符
     def _get_ch(self):
