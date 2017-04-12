@@ -10,8 +10,8 @@ C- 是C语言的一个子集
 
 用法:
 ---
-1. 需要安装python3.5\
-2. 进入代码主目录,在终端运行 python3.5 main.py [你的代码目录]\
+1. 需要安装python3.5
+2. 进入代码主目录,在终端运行 python3.5 main.py [C-源文件路径]\
    如 python3.5 main.py resources/target.c
 
 代码结构:
