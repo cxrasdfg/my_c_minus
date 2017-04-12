@@ -9,8 +9,8 @@ _node4[label="func_dec sort , return:void"]
 _node5[label="compound"]
 _node5local_declaration[label="local_declaration"]
 _node5sub_statements[label="sub statements"]
-_node6[label="local_dec i:local_dec"]
-_node7[label="local_dec j:local_dec"]
+_node6[label="local_dec j:local_dec"]
+_node7[label="local_dec i:local_dec"]
 _node8[label="assign_exp"]
 _node9[label="symbol_exp"]
 _node10[label="0:const_int"]
@@ -157,22 +157,22 @@ _node5->_node5local_declaration
 _node5->_node5sub_statements
 _node5local_declaration->_node6
 _node5local_declaration->_node7
-_node9->_node6
+_node9->_node7
 _node8->_node9
 _node8->_node10
 _node5sub_statements->_node8
-_node13->_node6
+_node13->_node7
 _node14->_node15
 _node12->_node13
 _node12->_node14
 _node16->_node16local_declaration
 _node16->_node16sub_statements
-_node18->_node7
-_node19->_node6
+_node18->_node6
+_node19->_node7
 _node17->_node18
 _node17->_node19
 _node16sub_statements->_node17
-_node22->_node7
+_node22->_node6
 _node24->_node15
 _node23->_node24
 _node23->_node25
@@ -181,11 +181,11 @@ _node21->_node23
 _node26->_node26local_declaration
 _node26->_node26sub_statements
 _node30->_node31
-_node32->_node6
+_node32->_node7
 _node29->_node30
 _node29->_node32
 _node34->_node31
-_node36->_node7
+_node36->_node6
 _node35->_node36
 _node35->_node37
 _node33->_node34
@@ -197,18 +197,18 @@ _node38->_node38sub_statements
 _node38local_declaration->_node39
 _node41->_node39
 _node43->_node31
-_node44->_node6
+_node44->_node7
 _node42->_node43
 _node42->_node44
 _node40->_node41
 _node40->_node42
 _node38sub_statements->_node40
 _node47->_node31
-_node48->_node6
+_node48->_node7
 _node46->_node47
 _node46->_node48
 _node50->_node31
-_node52->_node7
+_node52->_node6
 _node51->_node52
 _node51->_node53
 _node49->_node50
@@ -217,7 +217,7 @@ _node45->_node46
 _node45->_node49
 _node38sub_statements->_node45
 _node56->_node31
-_node58->_node7
+_node58->_node6
 _node57->_node58
 _node57->_node59
 _node55->_node56
@@ -230,8 +230,8 @@ _node27->_node27_else
 _node27->_node28
 _node27->_node38
 _node26sub_statements->_node27
-_node62->_node7
-_node64->_node7
+_node62->_node6
+_node64->_node6
 _node63->_node64
 _node63->_node65
 _node61->_node62
@@ -240,8 +240,8 @@ _node26sub_statements->_node61
 _node20->_node21
 _node20->_node26
 _node16sub_statements->_node20
-_node67->_node6
-_node69->_node6
+_node67->_node7
+_node69->_node7
 _node68->_node69
 _node68->_node70
 _node66->_node67
