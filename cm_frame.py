@@ -273,7 +273,7 @@ class Frame(object):
     @staticmethod
     def _inner_func_output(_arguments):
         try:
-            print(_arguments[0][1], end='')
+            print(_arguments[0][1], end='\n')
         except IndexError:
             run_time_error(MsgType.RUNTIME_ER_OUTPUT_ERROR_NO_OUTPUT)
 

@@ -176,7 +176,7 @@ class Lexer(object):
                     _token.set_token_type(cm_token.TokenType.TK_RIGHT_BRACE)
                     self._lexer_status = LexStatus.LS_RECEIVE
                 else:
-                    self.show_error(cm_util.MsgType.COMPILE_ER_EXPECT_TOKEN, '\'', _ch, '\'')
+                    self.show_error(cm_util.MsgType.COMPILE_ER_UNEXPECTED_TOKEN, '\'', _ch, '\'')
             elif self._lexer_status == LexStatus.LS_IN_INT:
                 _ch = self._get_ch()
                 if str.isdigit(_ch):

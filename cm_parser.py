@@ -295,7 +295,7 @@ class Parser(object):
 
         # 语义分析：####################################
         if _if_body is None:
-            self.show_error(MsgType.COMPILE_ER_NEED_EXPRESSION)
+            self.show_error(MsgType.COMPILE_ER_NEED_STATEMENT)
         ##############################################
 
         _else = None
@@ -330,7 +330,7 @@ class Parser(object):
 
         #  语义分析##############################
         if _while_body is None:
-            self.show_error(MsgType.COMPILE_ER_NEED_EXPRESSION)
+            self.show_error(MsgType.COMPILE_ER_NEED_STATEMENT)
         ########################################
 
         _result = cm_ast.ASTNode()

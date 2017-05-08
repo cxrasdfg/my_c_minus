@@ -12,6 +12,7 @@ class MsgType(Enum):
     COMPILE_ER_NEED_CONST_INT = 'need const integer:'
     COMPILE_ER_NEED_FUNCTION_NAME = 'need function name:'
     COMPILE_ER_NEED_EXPRESSION = 'need expression:'
+    COMPILE_ER_NEED_STATEMENT = 'need statement:'
     COMPILE_ER_NEED_ARRAY_SIZE = 'need array size:'
     COMPILE_ER_NEED_ARRAY_NAME = 'need array name:'
     COMPILE_ER_ASSIGN_TYPE_ERROR = 'can not assign exp:'
