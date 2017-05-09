@@ -557,6 +557,7 @@ class Parser(object):
     # <suffix_exp> -> <primary_exp> '(' <arguments>  ')'
     def _suffix_exp(self):
         _primary_exp = self._primary_exp()
+
         _suffix = _primary_exp
         _token = self._get_token()
         _token_type = _token.get_token_type()
@@ -571,6 +572,10 @@ class Parser(object):
             # 语义分析 #####################################
             if _int_exp is None or _int_exp.exp_semantic_type != cm_ast.VarType.VT_INT:
                 self.show_error(MsgType.COMPILE_ER_NEED_EXPRESSION, 'array index must be int ')
+
+            if _int_exp.type != cm_ast.ASTType.AST_SYMBOL_EXP and _int_exp.type != cm_ast.ASTType.AST_CONST_INT\
+                    and _int_exp.l_child is None:
+                self.show_error(MsgType.COMPILE_ER_NEED_EXPRESSION, 'array index must`t be empty')
             ###############################################
 
             self._skip(TokenType.TK_RIGHT_BRACKET)
@@ -610,6 +615,13 @@ class Parser(object):
             _func_call.exp_semantic_type = _primary_exp.exp_semantic_type
             ##############################
         else:
+            # 先进行语义的分析, 如果是函数调用，一定要有括号..
+            ######################################################
+            if _primary_exp is not None and _primary_exp.type == cm_ast.ASTType.AST_SYMBOL_EXP and (
+                            _primary_exp.var.type == cm_ast.ASTType.AST_FUNC_DECLARATION or
+               _primary_exp.var.type == cm_ast.ASTType.AST_INNER_DECLARATION):
+                self.show_error(MsgType.COMPILE_ER_EXPECT_TOKEN, TokenType.TK_LEFT_BRACE)
+                ######################################################
             self._putback_token()
         return _suffix
 
@@ -641,6 +653,8 @@ class Parser(object):
                 break
             elif _token.get_token_type() == TokenType.KW_VOID:
                 self.show_error(MsgType.COMPILE_ER_VOID_ARGUMENTS)
+            elif _token.get_token_type() == TokenType.TK_SEMICOLON:
+                self.show_error(MsgType.COMPILE_ER_EXPECT_TOKEN,TokenType.TK_RIGHT_PARENT)
 
         # 语义分析：#####################################
         self._check_argument(_func_params, _args)
@@ -825,6 +839,14 @@ class Parser(object):
 
         if _l_child is None or _r_child is None:
             self.show_error(MsgType.COMPILE_ER_NEED_EXPRESSION)
+
+        if _l_child.type != cm_ast.ASTType.AST_ARRAY_INDEX and ((_l_child.type ==
+                                                            cm_ast.ASTType.AST_SYMBOL_EXP and _l_child.var.type != cm_ast.ASTType.AST_LOCAL_DECLARATION and
+                                                        _l_child.var.type != cm_ast.ASTType.
+                                                                AST_GLOBAL_DECLARATION) or _l_child.type != cm_ast.ASTType.AST_SYMBOL_EXP):
+            self.show_error(MsgType.COMPILE_ER_EXPRESSION_NOT_ASSIGNABLE, 'expression')
+            #########
+
         if _l_child.exp_semantic_type != _r_child.exp_semantic_type:
             self.show_error(MsgType.COMPILE_ER_ASSIGN_TYPE_ERROR, _r_child.exp_semantic_type.value, ' to ',
                             _l_child.exp_semantic_type.value)
@@ -837,7 +859,6 @@ class Parser(object):
             self.show_error(MsgType.COMPILE_ER_EXPRESSION_NOT_ASSIGNABLE, _l_child.exp_semantic_type.value,
                             ' to const int ')
         _in.exp_semantic_type = _l_child.exp_semantic_type
-
     # 对symbol_exp 进行语义类型的分配
     @staticmethod
     def _symbol_exp_semantics_assign(_in: cm_ast.ASTNode):

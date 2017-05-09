@@ -35,6 +35,7 @@ class MsgType(Enum):
     RUNTIME_ER_ARRAY_OUT_OF_INDEX = 'array out of index'
     RUNTIME_ER_INPUT_ERROR_NO_INTEGER = 'input error: input must be integer'
     RUNTIME_ER_OUTPUT_ERROR_NO_OUTPUT = 'output error: no output'
+    RUNTIME_ER_DIVIDE_ZERO = 'divide zero error'
 
 
 def show_compile_warn(_line_num, _col_num, _msg_type: MsgType, _msg):

@@ -72,7 +72,8 @@ void main()
 
 
 
-/*设置某个数组的值*/
+
+/*
 void memset(int buffer[],int value,int size){
   int index;
   index=0;
@@ -81,10 +82,10 @@ void memset(int buffer[],int value,int size){
     index =index+1;
   }
 }
-int s; /*全局变量s*/
-int fabBuffer[100]; /*斐波那契数列的buffer*/
+int s;
+int fabBuffer[100];
 
-/*递归的斐波那契数列计算*/
+
 int fab(int n){
   int temp;
   if(n==0) return 0;
@@ -95,7 +96,7 @@ int fab(int n){
 
   return temp;
 }
-/*斐波那契测试函数*/
+
 void fabTest(int n){
 
   memset(fabBuffer,0,100);
@@ -108,8 +109,86 @@ void fabTest(int n){
   }
 }
 
+
 void main(){
   fabTest(100);
   s=input();
   output(s);
+}*/
+
+/*
+int x[10];
+int minloc ( int a[], int low, int high )
+{
+  int i; int x; int k;
+  k = low;
+  x = a[low];
+  i = low + 1;
+  while (i < high)
+  {
+    if (a[i] < x)
+    {
+      x = a[i];
+      k = i;
+    }
+    i = i + 1;
+  }
+  return k;
+}
+void sort ( int a[], int low, int high )
+{
+  int i; int k;
+  i = low;
+  while (i < high-1)
+  {
+   int t;
+   k = minloc (a,i,high);
+   t =a[k];
+   a[k] = a[i];
+   a[i] = t;
+   i = i + 1;
+  }
+}
+
+int func(){
+}
+void main (void)
+{
+  int i;
+  i = 0;
+  while (i < 10)
+  {
+
+     x[i]=input();
+
+     i = i + 1;
+  }
+     sort (x,0,10);
+     i = 0;
+  while (i < 10)
+   {
+     output(x[i]);
+     i = i + 1;
+   }
+}*/
+
+
+int gcd (int u, int v)
+{
+if (v == 0)
+ return u ;
+else
+ return gcd(v,u-u/v*v);
+/* u-u/v*v == u mod v */
+}
+void main(void)
+{
+output(123+231*3/0+123);
+int x;
+int y;
+x = input();
+y = input();
+  output(gcd(x,y));
+
+
 }

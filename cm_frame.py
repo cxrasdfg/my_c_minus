@@ -220,6 +220,8 @@ class Frame(object):
             _l_int_value = _l_value[1]
             _r_int_value = _r_value[1]
 
+            if _r_int_value == 0.0 or _r_int_value == 0:
+                run_time_error(MsgType.RUNTIME_ER_DIVIDE_ZERO)
             return VarType.VT_INT, int(_l_int_value / _r_int_value)
         elif _type == ASTType.AST_ARRAY_INDEX:
             _array_size = _l_child.var.var_array_size
